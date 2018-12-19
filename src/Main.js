@@ -10,8 +10,10 @@ var moving;
 var iterations;
 var showPolygons;
 var showPoints;
+var showCurves;
 var recalcular;
 var reset;
+
 
 function setup() {
     container = document.getElementById('container');
@@ -20,10 +22,14 @@ function setup() {
     mousePos = new Point(0, 0);
     movingPoint = false;
     points = [];
-    moving = {'mov': false, 'circle':-1};
+    moving = {
+        'mov': false,
+        'circle': -1
+    };
     iterations = document.getElementById('Iterations').value;
     showPolygons = document.getElementById('Polygons');
     showPoints = document.getElementById('Points');
+    showCurves = document.getElementById('Curves');
     recalcular = document.getElementById('Recalcular');
     reset = document.getElementById('Reset');
 }
@@ -33,13 +39,14 @@ function resizeCanvas(width, height) {
     canvas.width = width;
     canvas.height = height;
 }
+
 function resizeToFit() {
     var width = parseFloat(window.getComputedStyle(canvas).width);
     var height = parseFloat(window.getComputedStyle(canvas).height);
     resizeCanvas(width, height);
 }
 resizeToFit();
-
+draw();
 
 //###################################################### Colision #################################################
 function circleClicked() {
@@ -54,21 +61,27 @@ function circleClicked() {
 // ##################################################  Events #######################################################
 canvas.addEventListener('mousemove', e => {
     mousePos = new Point(e.offsetX, e.offsetY);
-    if (moving.mov) {
-        points[moving.circle] = mousePos;
-        draw();
+    console.log(mousePos);
+    if (mousePos.x < canvas.width / 2 && mousePos.y < canvas.height / 2) {
+        if (moving.mov) {
+            points[moving.circle] = mousePos;
+            draw();
+        }
     }
 });
 
 canvas.addEventListener('mousedown', e => {
-    let checkClick = circleClicked();
-    if (checkClick > -1) {
-        moving.mov = true;
-        moving.circle = checkClick;
-    } else {
-        points.push(mousePos);
-        draw();
+    if (mousePos.x < canvas.width / 2 && mousePos.y < canvas.height / 2) {
+        let checkClick = circleClicked();
+        if (checkClick > -1) {
+            moving.mov = true;
+            moving.circle = checkClick;
+        } else {
+            points.push(mousePos);
+            draw();
+        }
     }
+
 });
 canvas.addEventListener('mouseup', e => {
     if (moving.mov) {
@@ -77,20 +90,23 @@ canvas.addEventListener('mouseup', e => {
     }
 });
 
-showPolygons.addEventListener('click', e=>{
+showPolygons.addEventListener('click', e => {
     draw();
 });
 
-showPoints.addEventListener('click', e=>{
+showPoints.addEventListener('click', e => {
     draw();
 });
+showCurves.addEventListener('click', e=>{
+    draw();
+})
 
-recalcular.addEventListener('click', e=>{
+recalcular.addEventListener('click', e => {
     iterations = document.getElementById('Iterations').value;
     draw();
 });
 
-reset.addEventListener('click', e=>{
+reset.addEventListener('click', e => {
     setup();
     draw();
 });
@@ -132,6 +148,15 @@ function polygonControl(points) {
     }
 }
 
+function limits(){
+    let x0 = new Point(canvas.width/2, 0);
+    let xF = new Point(canvas.width/2, canvas.height);
+    line(x0,xF ,"#F0F8FF");
+    let y0 = new Point(0, canvas.height/2);
+    let yF = new Point(canvas.width, canvas.height/2);
+    line(y0, yF, "F0F8FF");
+}
+
 // ################################################## Bezier #########################################3
 function deCasteljau(points, t) {
     if (points.length == 1) {
@@ -151,16 +176,19 @@ function deCasteljau(points, t) {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if(showPoints.checked){
+    limits();
+
+    if (showPoints.checked) {
         points.forEach(point => {
             circle(point);
         });
     }
-    if (points.length > 1) {
+
+    if (showCurves.checked && points.length > 1) {
         curve(points);
     }
 
-    if(showPolygons.checked){
+    if (showPolygons.checked) {
         polygonControl(points);
     }
 };
