@@ -4,31 +4,31 @@ class Vector{
         this.y = y;
     }
 
-    size(a) { 
+    static size(a) { 
         var v = Math.sqrt( (a.x * a.x) + (a.y * a.y) ); 
         return v;
     }
-    add(a, b) { 
+    static add(a, b) { 
         var v = new Vector( (a.x + b.x), (a.y + b.y) ); 
         return v;
     }
-    sub(a, b) { 
+    static sub(a, b) { 
         var v = new Vector( (a.x - b.x), (a.y - b.y) ); 
         return v;
     }
-    kProduct(k, vec) { 
+    static kProduct(k, vec) { 
         var v = new Vector( (k * vec.x), (k* vec.y) ); 
         return v;
     }
-    dotProduct(a, b) { 
+    static dotProduct(a, b) { 
         return (a.x * b.x) + (a.y * b.y); 
         
     }
-    kDiv(k, vec) {
+    static kDiv(k, vec) {
         var v = new Vector( (vec.x / k), (vec.y / k) );
         return v;
     }
-    rotate(vec, degrees) {
+    static rotate(vec, degrees) {
         var r = new Vector( ((Math.cos(degrees) * vec.x) + ((-1) *Math.sin(degrees) * vec.y)),
                             (( Math.sin(degrees) * vec.x) + (Math.cos(degrees) * vec.y)) );
         return r;
