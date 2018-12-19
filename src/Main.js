@@ -1,4 +1,4 @@
-// Setup
+// #######################################  Setup #############################################
 var container;
 var canvas;
 var ctx;
@@ -29,14 +29,19 @@ function setup() {
 }
 setup();
 
-function resizeCanvas() {
-    canvas.width = parseFloat(window.getComputedStyle(canvas).width);
-    canvas.height = parseFloat(window.getComputedStyle(canvas).height);
+function resizeCanvas(width, height) {
+    canvas.width = width;
+    canvas.height = height;
 }
-resizeCanvas();
+function resizeToFit() {
+    var width = parseFloat(window.getComputedStyle(canvas).width);
+    var height = parseFloat(window.getComputedStyle(canvas).height);
+    resizeCanvas(width, height);
+}
+resizeToFit();
 
 
-// Colision
+//###################################################### Colision #################################################
 function circleClicked() {
     for (let i = 0; i < points.length; i++) {
         if (Vector.size(Vector.sub(mousePos, points[i])) <= 8) {
@@ -46,7 +51,7 @@ function circleClicked() {
     return -1;
 }
 
-// Events
+// ##################################################  Events #######################################################
 canvas.addEventListener('mousemove', e => {
     mousePos = new Point(e.offsetX, e.offsetY);
     if (moving.mov) {
@@ -91,7 +96,7 @@ reset.addEventListener('click', e=>{
 });
 
 
-// Draw stuff
+// ########################################################### DRAW ###########################################
 function circle(p) {
     ctx.beginPath();
     ctx.fillStyle = "#0000CD";
@@ -127,14 +132,14 @@ function polygonControl(points) {
     }
 }
 
-// Bezier
+// ################################################## Bezier #########################################3
 function deCasteljau(points, t) {
     if (points.length == 1) {
         return points[0];
     }
     var dc_points = [];
     for (var i = 0; i < (points.length - 1); i++) {
-        // Do (1-t)*a + t*b
+        //(1-t)*a + t*b
         var a = Vector.kProduct(1 - t, points[i]);
         var b = Vector.kProduct(t, points[i + 1]);
         var c = Vector.add(a, b);
