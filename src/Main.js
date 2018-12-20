@@ -53,6 +53,7 @@ resizeToFit();
 draw();
 
 //###################################################### Colision #################################################
+
 function circleClicked() {
     for (let i = 0; i < points.length; i++) {
         if (Vector.size(Vector.sub(mousePos, points[i])) <= 8) {
@@ -117,6 +118,16 @@ reset.addEventListener('click', e => {
     setup();
     draw();
 });
+
+document.addEventListener('keydown', e=> {
+    let c = circleClicked();
+    if (e.code == 'KeyX' && c >= 0) {
+      points.splice(c, 1);
+      attPointsX();
+      attPointsY();
+      draw();
+    }
+  });
 
 
 // ########################################################### DRAW ###########################################
@@ -197,7 +208,6 @@ function drawBezier(pts){
 }
 
 function draw() {
-    console.log(crossPlotXPoints);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     limits();
     drawBezier(points);
@@ -209,6 +219,7 @@ function draw() {
 // ###################################### CROSS PLOTS ####################
 
 function attPointsX(){
+    crossPlotXPoints = [];
     for(let i = 0;i<points.length;i++){
         let p = new Point(points[i].x, canvas.height/2 + ((canvas.height/2)/Math.max((points.length-1), 1) * i));
         crossPlotXPoints[i] = p;
@@ -216,6 +227,7 @@ function attPointsX(){
 }
 
 function attPointsY(){
+    crossPlotYPoints = [];
     for(let i =0;i<points.length;i++){
         let p = new Point(canvas.width/2 + ((canvas.width/2)/Math.max((points.length-1), 1) * i), points[i].y);
         crossPlotYPoints[i] = p;
