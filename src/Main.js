@@ -5,6 +5,8 @@ var ctx;
 var mousePos;
 var movingPoint;
 var points;
+var crossPlotXPoints;
+var crossPlotYPoints;
 var moving;
 //Buttons and Input
 var iterations;
@@ -22,6 +24,8 @@ function setup() {
     mousePos = new Point(0, 0);
     movingPoint = false;
     points = [];
+    crossPlotXPoints = [];
+    crossPlotYPoints = [];
     moving = {
         'mov': false,
         'circle': -1
@@ -61,10 +65,11 @@ function circleClicked() {
 // ##################################################  Events #######################################################
 canvas.addEventListener('mousemove', e => {
     mousePos = new Point(e.offsetX, e.offsetY);
-    console.log(mousePos);
     if (mousePos.x < canvas.width / 2 && mousePos.y < canvas.height / 2) {
         if (moving.mov) {
             points[moving.circle] = mousePos;
+            attPointsX();
+            attPointsY();
             draw();
         }
     }
@@ -78,6 +83,8 @@ canvas.addEventListener('mousedown', e => {
             moving.circle = checkClick;
         } else {
             points.push(mousePos);
+            attPointsX();
+            attPointsY();
             draw();
         }
     }
@@ -173,22 +180,44 @@ function deCasteljau(points, t) {
     return deCasteljau(dc_points, t);
 }
 
-function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    limits();
-
+function drawBezier(pts){
     if (showPoints.checked) {
-        points.forEach(point => {
+        pts.forEach(point => {
             circle(point);
         });
     }
 
-    if (showCurves.checked && points.length > 1) {
-        curve(points);
+    if (showCurves.checked && pts.length > 1) {
+        curve(pts);
     }
 
     if (showPolygons.checked) {
-        polygonControl(points);
+        polygonControl(pts);
     }
+}
+
+function draw() {
+    console.log(crossPlotXPoints);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    limits();
+    drawBezier(points);
+    drawBezier(crossPlotXPoints);
+    drawBezier(crossPlotYPoints);
+
 };
+
+// ###################################### CROSS PLOTS ####################
+
+function attPointsX(){
+    for(let i = 0;i<points.length;i++){
+        let p = new Point(points[i].x, canvas.height/2 + ((canvas.height/2)/Math.max((points.length-1), 1) * i));
+        crossPlotXPoints[i] = p;
+    }
+}
+
+function attPointsY(){
+    for(let i =0;i<points.length;i++){
+        let p = new Point(canvas.width/2 + ((canvas.width/2)/Math.max((points.length-1), 1) * i), points[i].y);
+        crossPlotYPoints[i] = p;
+    }
+}
