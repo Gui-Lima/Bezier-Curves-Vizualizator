@@ -1,7 +1,6 @@
-# DALE ESSAS CURVAS DE BEZIER @LAMSLAMSLAMS
+## Vizualização de Curvas de Bezier e seus Cross Plots.
 
-## Vizualização de Cross Plots de curvas de bezier.
-
+Para rodar, só abra o index.html.
 
 Os pontos da curva são iterativos e tanto os cross plots quanto a curva principal irá se mover de acordo.
 
